@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>牙齒亮晶晶！刷牙小勇士</title>
+<style>
+:root{
+  --canvas:#fff0b5;--paper:#fff;--powder:#ffe08a;--powder-soft:#fff9e7;
+  --sky:#73c9e6;--sky-soft:#e7f7fc;--indigo:#5b70c8;--green:#377a4a;
+  --green-soft:#e3f4e7;--primary:#8a4b19;--primary-dark:#5e2f0e;
+  --orange:#e77732;--yellow:#f4b942;--ink:#3e2b1f;--soft-ink:#6b5343;
+  --line:#e8d5b8;--shadow:0 22px 60px rgba(112,65,28,.18);
+  --shadow-soft:0 12px 28px rgba(112,65,28,.12);
+}
+*{box-sizing:border-box}
+input,select,textarea{max-width:100%}
+body{
+  margin:0;min-height:100vh;color:var(--ink);
+  font-family:"Arial Rounded MT Bold","Noto Sans TC","Microsoft JhengHei",system-ui,sans-serif;
+  background:
+    radial-gradient(circle at 24px 24px,rgba(138,75,25,.08) 0 5px,transparent 6px) 0 0/58px 58px,
+    radial-gradient(circle at 90% 12%,rgba(115,201,230,.3),transparent 28%),
+    linear-gradient(135deg,#ffe79a 0%,#fff9e7 52%,#e8f7dc 100%);
+}
+button{font:inherit;cursor:pointer}
+.container{width:min(1080px,calc(100% - 28px));margin:auto;padding:22px 0 48px}
+.topbar{
+  display:flex;align-items:center;justify-content:space-between;gap:12px;
+  padding:13px 18px;border-radius:999px;background:rgba(255,255,255,.86);
+  border:2px solid white;box-shadow:var(--shadow-soft);margin-bottom:22px;
+}
+.brand{display:flex;align-items:center;gap:11px;font-weight:950}
+.logo{width:43px;height:43px;border-radius:15px;display:grid;place-items:center;
+  color:white;background:linear-gradient(135deg,var(--primary-dark),var(--primary));font-size:23px}
+.top-tag{padding:8px 13px;border-radius:999px;background:var(--green-soft);color:var(--green);font-weight:900;font-size:13px}
+.hero{display:grid;grid-template-columns:1.05fr .95fr;gap:20px;align-items:stretch}
+.hero-card,.side-card,.game-card{
+  border:2px solid rgba(255,255,255,.94);box-shadow:var(--shadow);
+  border-radius:32px;background:rgba(255,255,255,.82);backdrop-filter:blur(12px);
+}
+.hero-card{padding:clamp(22px,4vw,42px);position:relative;overflow:hidden;min-height:270px}
+.hero-card:before{content:"";position:absolute;width:180px;height:180px;right:-65px;top:-65px;border-radius:50%;background:linear-gradient(135deg,var(--indigo),var(--sky));opacity:.25}
+.label{display:inline-block;padding:8px 13px;border-radius:999px;background:#f7e4d2;color:var(--primary-dark);font-size:13px;font-weight:950}
+h1{font-size:clamp(32px,5vw,52px);line-height:1.15;margin:17px 0 12px}
+.accent{color:var(--orange)}
+.hero-card p{color:var(--soft-ink);line-height:1.8;font-size:17px;margin:0;max-width:530px}
+.side-card{padding:23px;background:linear-gradient(135deg,rgba(215,242,255,.96),rgba(255,255,255,.85));display:flex;flex-direction:column;justify-content:center}
+.side-card h2{margin:0 0 10px;font-size:23px}
+.side-card p{line-height:1.8;color:var(--soft-ink);margin:0}
+.tip{margin-top:15px;padding:13px 15px;border-radius:18px;background:white;color:var(--green);font-weight:850;line-height:1.6}
+.game-card{margin-top:20px;padding:clamp(17px,3vw,30px);text-align:center}
+.game-head{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:12px;text-align:left}
+.game-head h2{margin:0;font-size:clamp(21px,3vw,28px)}
+.counter{background:var(--amber-soft);color:var(--primary-dark);border-radius:999px;padding:9px 14px;font-weight:950;white-space:nowrap}
+.stage{
+  min-height:340px;border-radius:27px;position:relative;overflow:hidden;
+  display:grid;place-items:center;
+  background:radial-gradient(circle at 50% 42%,#fff 0 22%,transparent 23%),linear-gradient(180deg,#e7f7fc,#fff9e7);
+  border:1px solid #d9edf2;
+}
+.stage:before,.stage:after{position:absolute;font-size:30px;opacity:.7}
+.stage:before{content:"✦  ✧       ✦";left:5%;top:12%}
+.stage:after{content:"✧       ✦  ✧";right:5%;bottom:12%}
+.kid{position:relative;width:min(330px,80vw);height:285px;display:flex;align-items:center;justify-content:center;flex-direction:column;z-index:1}
+.hair{position:absolute;top:15px;width:220px;height:95px;background:#70452c;border-radius:100px 100px 25px 25px;z-index:2}
+.face{position:absolute;top:38px;width:220px;height:210px;border-radius:48% 48% 45% 45%;background:#ffd6ad;border:5px solid #e9a878;z-index:3;box-shadow:0 10px 0 rgba(138,75,25,.08)}
+.fringe{position:absolute;top:22px;left:65px;width:95px;height:53px;background:#70452c;border-radius:10% 90% 35% 55%;transform:rotate(-8deg);z-index:4}
+.ear{position:absolute;top:112px;width:42px;height:55px;background:#ffd6ad;border:4px solid #e9a878;border-radius:50%;z-index:2}
+.ear.left{left:39px}.ear.right{right:39px}
+.eye{position:absolute;top:105px;width:13px;height:18px;border-radius:50%;background:#3e2b1f;z-index:5}
+.eye.left{left:62px}.eye.right{right:62px}
+.cheek{position:absolute;top:137px;width:35px;height:19px;border-radius:50%;background:#f69b91;opacity:.75;z-index:5}
+.cheek.left{left:27px}.cheek.right{right:27px}
+.mouth{position:absolute;top:143px;left:91px;width:38px;height:25px;border:4px solid #9e5148;border-top:0;border-radius:0 0 50% 50%;z-index:5}
+.mouth.happy{top:139px;height:28px;border-top:4px solid #9e5148;border-bottom:0;border-radius:50% 50% 0 0}
+.teeth{position:absolute;top:171px;left:50%;transform:translateX(-50%);width:110px;height:43px;border:4px solid #e5a078;border-radius:8px 8px 24px 24px;background:#fff;z-index:6;display:flex;justify-content:center;overflow:hidden}
+.tooth{height:100%;width:25%;border-right:2px solid #e9e1d4;background:linear-gradient(#fff,#f9f9f1)}
+.tooth:last-child{border:0}
+.dirt{position:absolute;z-index:7;font-size:19px;transition:opacity .35s,transform .35s;filter:drop-shadow(0 2px 1px #fff)}
+.d1{left:14px;top:8px}.d2{right:12px;top:15px}.d3{left:29px;bottom:5px}.d4{right:27px;bottom:3px}.d5{left:49px;top:17px}.d6{right:48px;top:6px}
+.dirt.gone{opacity:0;transform:scale(.1) rotate(90deg);pointer-events:none}
+.soap{position:absolute;top:5px;right:5px;font-size:25px;opacity:0;transition:opacity .3s}
+.soap.show{opacity:1}
+.progress-wrap{max-width:580px;margin:20px auto 10px}
+.progress-label{display:flex;justify-content:space-between;gap:10px;font-weight:900;color:var(--soft-ink);font-size:14px}
+.progress{height:16px;border-radius:999px;background:#eadfca;overflow:hidden;margin-top:9px}
+.progress span{display:block;width:0;height:100%;border-radius:999px;background:linear-gradient(90deg,var(--green),#8bcf75,var(--yellow));transition:width .35s}
+.status{min-height:30px;margin:12px 0 15px;font-weight:900;color:var(--primary);font-size:17px}
+.actions{display:flex;justify-content:center;flex-wrap:wrap;gap:12px}
+.btn{border:0;border-radius:999px;padding:14px 24px;font-size:17px;font-weight:950;color:white;background:linear-gradient(135deg,var(--primary),var(--primary-dark));box-shadow:0 12px 24px rgba(138,75,25,.25);transition:transform .15s,filter .15s}
+.btn:hover{transform:translateY(-2px);filter:brightness(1.06)}
+.btn:disabled{opacity:.55;cursor:not-allowed;transform:none}
+.btn.secondary{background:white;color:var(--primary);border:2px solid #e8d5b8;box-shadow:none}
+.btn:focus-visible{outline:4px solid rgba(91,112,200,.45);outline-offset:3px}
+.reward{display:none;margin:20px auto 0;max-width:620px;padding:20px;border-radius:24px;background:linear-gradient(135deg,#fff0b5,#e3f4e7);border:2px solid white;box-shadow:var(--shadow-soft);animation:pop .55s ease both}
+.reward.show{display:block}
+.fairy{font-size:64px;display:block;animation:float 2s ease-in-out infinite}
+.reward h2{margin:5px 0 8px;color:var(--green);font-size:27px}
+.reward p{margin:0;line-height:1.8;font-weight:800}
+@keyframes pop{0%{transform:scale(.6);opacity:0}75%{transform:scale(1.05)}100%{transform:scale(1);opacity:1}}
+@keyframes float{50%{transform:translateY(-9px) rotate(5deg)}}
+.footer{text-align:center;color:var(--soft-ink);font-size:13px;margin-top:18px;line-height:1.7}
+@media(max-width:760px){.hero{grid-template-columns:1fr}.hero-card{min-height:auto}.stage{min-height:315px}.game-head{align-items:flex-start;flex-direction:column}}
+@media(max-width:420px){.container{width:calc(100% - 18px);padding-top:12px}.topbar{border-radius:22px;padding:11px 13px}.top-tag{font-size:11px}.game-card{padding:13px}.stage{min-height:290px}.kid{transform:scale(.9)}.btn{width:100%}}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<main class="container">
+  <nav class="topbar" aria-label="網站標題">
+    <div class="brand"><div class="logo">🪥</div><span>牙齒亮晶晶！刷牙小勇士</span></div>
+    <span class="top-tag">🌟 10 次刷牙挑戰</span>
+  </nav>
+
+  <section class="hero">
+    <div class="hero-card">
+      <span class="label">🦷 CLEAN TEETH ADVENTURE</span>
+      <h1>一起把牙齒刷成<br><span class="accent">閃亮小珍珠！</span></h1>
+      <p>小朋友的牙齒沾到食物碎屑和牙菌斑了！快來幫忙刷牙，每按一次，就能清除一些髒污。</p>
+    </div>
+    <aside class="side-card">
+      <h2>✨ 今日小任務</h2>
+      <p>完成 10 次刷牙點擊，幫小朋友找回潔白笑容，讓神祕的小仙女現身！</p>
+      <div class="tip">💡 刷牙小提醒：每天早晚都要刷牙，也別忘了請大人協助檢查喔！</div>
+    </aside>
+  </section>
+
+  <section class="game-card" aria-labelledby="gameTitle">
+    <div class="game-head">
+      <h2 id="gameTitle">🧒 幫小朋友清潔牙齒</h2>
+      <div class="counter" id="counter" aria-live="polite">刷牙次數：0 / 10</div>
+    </div>
+
+    <div class="stage" aria-label="小朋友的臉部插畫，牙齒上有食物殘渣和細菌">
+      <div class="kid" id="kid">
+        <div class="ear left"></div><div class="ear right"></div>
+        <div class="hair"></div><div class="face"></div><div class="fringe"></div>
+        <div class="eye left"></div><div class="eye right"></div>
+        <div class="cheek left"></div><div class="cheek right"></div>
+        <div class="mouth" id="mouth"></div>
+        <div class="teeth" id="teeth" aria-label="需要清潔的牙齒">
+          <span class="tooth"></span><span class="tooth"></span><span class="tooth"></span><span class="tooth"></span>
+          <span class="dirt d1">🍪</span><span class="dirt d2">🦠</span><span class="dirt d3">🟤</span>
+          <span class="dirt d4">🥬</span><span class="dirt d5">🦠</span><span class="dirt d6">🟡</span>
+          <span class="soap" id="soap">✨</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="progress-wrap">
+      <div class="progress-label"><span>清潔進度</span><span id="percent">0%</span></div>
+      <div class="progress" role="progressbar" aria-label="清潔進度" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" id="progress"><span id="bar"></span></div>
+    </div>
+    <p class="status" id="status" aria-live="polite">準備好了嗎？按下刷牙按鈕開始吧！</p>
+    <div class="actions">
+      <button class="btn" id="brushBtn" type="button">🪥 刷牙 +1</button>
+      <button class="btn secondary" id="resetBtn" type="button">🔄 重新開始</button>
+    </div>
+
+    <div class="reward" id="reward" role="status" aria-live="polite">
+      <span class="fairy">🧚‍♀️✨</span>
+      <h2>太棒了！牙齒閃亮亮！</h2>
+      <p>恭喜你完成 10 次刷牙挑戰！小仙女送你一個閃亮笑容徽章 🏅<br>記得每天早晚刷牙，繼續保持好習慣喔！</p>
+    </div>
+  </section>
+  <p class="footer">🌼 每一次認真清潔，都是照顧自己的小小超能力！</p>
+</main>
+<script>
+(() => {
+  "use strict";
+  const total = 10;
+  let count = 0;
+  const counter = document.getElementById("counter");
+  const percent = document.getElementById("percent");
+  const bar = document.getElementById("bar");
+  const progress = document.getElementById("progress");
+  const status = document.getElementById("status");
+  const brushBtn = document.getElementById("brushBtn");
+  const resetBtn = document.getElementById("resetBtn");
+  const reward = document.getElementById("reward");
+  const mouth = document.getElementById("mouth");
+  const soap = document.getElementById("soap");
+  const dirt = Array.from(document.querySelectorAll(".dirt"));
+
+  const messages = [
+    "做得好！髒污正在慢慢離開！",
+    "繼續加油！牙齒越來越乾淨囉！",
+    "好棒！再幫忙刷一刷！",
+    "閃亮笑容快要出現了！"
+  ];
+
+  function update() {
+    const value = Math.round(count / total * 100);
+    counter.textContent = `刷牙次數：${count} / ${total}`;
+    percent.textContent = `${value}%`;
+    bar.style.width = `${value}%`;
+    progress.setAttribute("aria-valuenow", String(value));
+    // 依進度逐步清除髒污，最後一次確保全部消失。
+    const cleanCount = Math.floor(count / total * dirt.length);
+    dirt.forEach((item, index) => item.classList.toggle("gone", index < cleanCount));
+    soap.classList.toggle("show", count > 0);
+
+    if (count === total) {
+      status.textContent = "任務完成！你是刷牙小勇士！";
+      mouth.classList.add("happy");
+      brushBtn.disabled = true;
+      reward.classList.add("show");
+    } else if (count === 0) {
+      status.textContent = "準備好了嗎？按下刷牙按鈕開始吧！";
+      mouth.classList.remove("happy");
+      brushBtn.disabled = false;
+      reward.classList.remove("show");
+    } else {
+      status.textContent = messages[(count - 1) % messages.length];
+      mouth.classList.remove("happy");
+      reward.classList.remove("show");
+      brushBtn.disabled = false;
+    }
+  }
+
+  brushBtn.addEventListener("click", () => {
+    if (count >= total) return;
+    count = Math.min(total, count + 1);
+    update();
+  });
+
+  resetBtn.addEventListener("click", () => {
+    count = 0;
+    update();
+    brushBtn.focus();
+  });
+
+  update();
+})();
+</script>
+</body>
+</html>
